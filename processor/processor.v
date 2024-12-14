@@ -38,4 +38,6 @@ module pipelined_processor;
     // writeback stage control signals
     reg RegWriteW;
     reg [1:0] ResultSrcW;
+
+    
 endmodule

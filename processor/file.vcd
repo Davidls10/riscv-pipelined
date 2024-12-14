@@ -1,0 +1,69 @@
+$date
+	Sat Dec 14 12:01:13 2024
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module hazard_test $end
+$var wire 2 ! ForwardBE [1:0] $end
+$var wire 2 " ForwardAE [1:0] $end
+$var reg 5 # RegDestinM [4:0] $end
+$var reg 5 $ RegDestinW [4:0] $end
+$var reg 5 % RegSource1E [4:0] $end
+$var reg 5 & RegSource2E [4:0] $end
+$var reg 1 ' RegWriteM $end
+$var reg 1 ( RegWriteW $end
+$scope module uut $end
+$var wire 5 ) RegDestinM [4:0] $end
+$var wire 5 * RegDestinW [4:0] $end
+$var wire 5 + RegSource1E [4:0] $end
+$var wire 5 , RegSource2E [4:0] $end
+$var wire 1 ' RegWriteM $end
+$var wire 1 ( RegWriteW $end
+$var reg 2 - ForwardAE [1:0] $end
+$var reg 2 . ForwardBE [1:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+bx .
+b10 -
+b10 ,
+b101 +
+b10 *
+b101 )
+1(
+1'
+b10 &
+b101 %
+b10 $
+b101 #
+b10 "
+bx !
+$end
+#5
+b10 !
+b10 .
+b101 $
+b101 *
+b10 #
+b10 )
+#10
+b0 !
+b0 .
+b0 "
+b0 -
+0(
+0'
+b0 #
+b0 )
+b0 %
+b0 +
+#20
