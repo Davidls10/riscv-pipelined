@@ -60,6 +60,8 @@ module processor(output pc_out, alu_result,
     wire [5-1:0] Rs1D, Rs2D;
     reg [5-1:0] Rs1E, Rs2E;
     wire [1:0] ForwardAE, ForwardBE;
+    wire lwStall, StallF, StallD;
+    wire FlushD, FlushE;
 
 
     always @(posedge clk or posedge reset) begin
@@ -146,21 +148,40 @@ module processor(output pc_out, alu_result,
             PCPlus4M <= PCPlus4E;
 
             // execute stage datapath signals update
-            RD1E <= RD1D;
-            RD2E <= RD2D;
-            RdE <= RdD;
-            ImmExtE <= ImmExtD;
-            PCE <= PCD;
-            PCPlus4E <= PCPlus4D;
-            Rs1E <= Rs1D;
-            Rs2E <= Rs2D;
+            if (FlushE) begin
+                RD1E <= 0;
+                RD2E <= 0;
+                RdE <= 0;
+                ImmExtE <= 0;
+                PCE <= 0;
+                PCPlus4E <= 0;
+                Rs1E <= 0;
+                Rs2E <= 0;
+            end else begin
+                RD1E <= RD1D;
+                RD2E <= RD2D;
+                RdE <= RdD;
+                ImmExtE <= ImmExtD;
+                PCE <= PCD;
+                PCPlus4E <= PCPlus4D;
+                Rs1E <= Rs1D;
+                Rs2E <= Rs2D;
+            end
 
             // decode stage datapath signals update
-            InstrD <= InstrF;
-            PCD <= PCF;
-            PCPlus4D <= PCPlus4F;
+            if (~StallD) begin
+                InstrD <= InstrF;
+                PCD <= PCF;
+                PCPlus4D <= PCPlus4F;
+            end
+            if (FlushD) begin
+                InstrD <= 0;
+                PCD <= 0;
+                PCPlus4D <= 0;
+            end
 
-            PCF <= PCFNext;
+            if (~StallF)
+                PCF <= PCFNext;
         end
 
         $display("PCD = %x  InstrD = %b  A1 = %d  A2 = %d  JumpD = %d  BranchD = %d  RegWriteD = %b", 
@@ -172,7 +193,8 @@ module processor(output pc_out, alu_result,
         $display("ALUResultM = %d  WriteDataM = %b  RdM = %d  PCPlus4M = %d  RegWriteM = %d", ALUResultM, WriteDataM, RdM, PCPlus4M, RegWriteM);
         $display("RegWriteW = %b  ResultSrcW = %d  ALUResultW = %d  ReadDataW = %d  PCPlus4W = %d  ResultW = %d  RdW = %d", 
                  RegWriteW, ResultSrcW, ALUResultW, ReadDataW, PCPlus4W, ResultW, RdW);
-        $display("ForwardAE = %b  ForwardBE = %b  SrcAE = %d  SrcBE = %d\n\n", ForwardAE, ForwardBE, SrcAE, SrcBE);
+        $display("ForwardAE = %b  ForwardBE = %b  SrcAE = %d  SrcBE = %d", ForwardAE, ForwardBE, SrcAE, SrcBE);
+        $display("lwStall = %b  StallF = %b  StallD = %b  FlushD = %b  FlushE = %b\n\n", lwStall, StallF, StallD, FlushD, FlushE);
     end
 
     // program counter + 4
@@ -266,12 +288,22 @@ module processor(output pc_out, alu_result,
     assign Rs2D = InstrD[24:20];
     hazard_unit haz_unit (.ForwardAE(ForwardAE),
                           .ForwardBE(ForwardBE),
-                          .RegSource1E(Rs1E),
-                          .RegSource2E(Rs2E),
-                          .RegDestinM(RdM),
-                          .RegDestinW(RdW),
+                          .lwStall(lwStall),
+                          .StallF(StallF),
+                          .StallD(StallD),
+                          .FlushD(FlushD),
+                          .FlushE(FlushE),
+                          .Rs1D(Rs1D),
+                          .Rs2D(Rs2D),                          
+                          .Rs1E(Rs1E),
+                          .Rs2E(Rs2E),
+                          .RdE(RdE),
+                          .RdM(RdM),
+                          .RdW(RdW),
                           .RegWriteM(RegWriteM),
-                          .RegWriteW(RegWriteW));
+                          .RegWriteW(RegWriteW),
+                          .PCSrcE(PCSrcE),
+                          .ResultSrcE0(ResultSrcE[0]));
 
 
 endmodule

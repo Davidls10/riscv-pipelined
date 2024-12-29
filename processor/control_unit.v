@@ -133,14 +133,22 @@ module main_decoder (input [7-1:0] opcode,
 
             default:
                 begin
-                    reg_write = 1'b0;
-                    imm_src = 2'b00;
-                    alu_src = 1'b0;
-                    mem_write = 1'b0;
-                    result_src = 2'b00;
-                    branch = 1'b0;
-                    alu_op = 2'b00;
-                    jump = 1'b0;        
+                    reg_write = 1'bx;
+                    imm_src = 2'bxx;
+                    alu_src = 1'bx;
+                    mem_write = 1'bx;
+                    result_src = 2'bxx;
+                    branch = 1'bx;
+                    alu_op = 2'bxx;
+                    jump = 1'bx;                        
+                    // reg_write = 1'b0;
+                    // imm_src = 2'b00;
+                    // alu_src = 1'b0;
+                    // mem_write = 1'b0;
+                    // result_src = 2'b00;
+                    // branch = 1'b0;
+                    // alu_op = 2'b00;
+                    // jump = 1'b0;        
                 end
         endcase
     end
