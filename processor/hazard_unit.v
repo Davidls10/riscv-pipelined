@@ -36,7 +36,7 @@ module hazard_unit (output reg [2-1:0] ForwardAE,
     end
 
     // Stall logic
-    assign lwStall = ResultSrcE0 & ((Rs1D == RdE) || (Rs2D == RdE)); // if ResultSrcE[0] == 1, load word is in the Execute stage
+    assign lwStall = ResultSrcE0 & ((Rs1D == RdE) || (Rs2D == RdE)); // if ResultSrcE[0] == 1, load word is in the execute stage
     assign StallD = lwStall;
     assign StallF = lwStall;
 

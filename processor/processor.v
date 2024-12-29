@@ -127,13 +127,24 @@ module processor(output pc_out, alu_result,
             MemWriteM <= MemWriteE;
 
             // execute stage control signals update
-            RegWriteE <= RegWriteD;
-            ResultSrcE <= ResultSrcD;
-            MemWriteE <= MemWriteD;
-            JumpE <= JumpD;
-            BranchE <= BranchD;
-            ALUControlE <= ALUControlD;
-            AluSrcE <= AluSrcD;
+            if (FlushE) begin
+                RegWriteE <= 0;
+                ResultSrcE <= 0;
+                MemWriteE <= 0;
+                JumpE <= 0;
+                BranchE <= 0;
+                ALUControlE <= 0;
+                AluSrcE <= 0;                
+            end
+            else begin
+                RegWriteE <= RegWriteD;
+                ResultSrcE <= ResultSrcD;
+                MemWriteE <= MemWriteD;
+                JumpE <= JumpD;
+                BranchE <= BranchD;
+                ALUControlE <= ALUControlD;
+                AluSrcE <= AluSrcD;
+            end
 
             // writeback stage datapath signals update
             ALUResultW <= ALUResultM;
@@ -157,7 +168,8 @@ module processor(output pc_out, alu_result,
                 PCPlus4E <= 0;
                 Rs1E <= 0;
                 Rs2E <= 0;
-            end else begin
+            end 
+            else begin
                 RD1E <= RD1D;
                 RD2E <= RD2D;
                 RdE <= RdD;
@@ -194,7 +206,7 @@ module processor(output pc_out, alu_result,
         $display("RegWriteW = %b  ResultSrcW = %d  ALUResultW = %d  ReadDataW = %d  PCPlus4W = %d  ResultW = %d  RdW = %d", 
                  RegWriteW, ResultSrcW, ALUResultW, ReadDataW, PCPlus4W, ResultW, RdW);
         $display("ForwardAE = %b  ForwardBE = %b  SrcAE = %d  SrcBE = %d", ForwardAE, ForwardBE, SrcAE, SrcBE);
-        $display("lwStall = %b  StallF = %b  StallD = %b  FlushD = %b  FlushE = %b\n\n", lwStall, StallF, StallD, FlushD, FlushE);
+        $display("PCSrcE = %b  lwStall = %b  StallF = %b  StallD = %b  FlushD = %b  FlushE = %b\n\n", PCSrcE, lwStall, StallF, StallD, FlushD, FlushE);
     end
 
     // program counter + 4
