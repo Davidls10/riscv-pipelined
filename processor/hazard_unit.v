@@ -9,16 +9,16 @@ module hazard_unit (output reg [2-1:0] ForwardAE,
 
     always @* begin
         if (((RegSource1E == RegDestinM) & RegWriteM) & (RegSource1E != 1'b0))
-            ForwardAE = 2'b10;
+            ForwardAE <= 2'b10;
         else if (((RegSource2E == RegDestinM) & RegWriteM) & (RegSource2E != 1'b0))
-            ForwardBE = 2'b10;
+            ForwardBE <= 2'b10;
         else if (((RegSource1E == RegDestinW) & RegWriteW) & (RegSource1E != 1'b0))
-            ForwardAE = 2'b01;
+            ForwardAE <= 2'b01;
         else if (((RegSource2E == RegDestinW) & RegWriteW) & (RegSource2E != 1'b0))
-            ForwardBE = 2'b01;
+            ForwardBE <= 2'b01;
         else begin
-            ForwardAE = 2'b00;
-            ForwardBE = 2'b00;
+            ForwardAE <= 2'b00;
+            ForwardBE <= 2'b00;
         end
     end
 endmodule

@@ -1,15 +1,20 @@
-module alu (output [31:0] f, 
-            output zero_flag,
-            input [31:0] a, b, 
-            input sel [2:0]);
+module alu#(parameter N = 32)
+           (output [N-1:0] ALUResult,
+            output wire zero_flag,
+            input [N-1:0] SrcA, SrcB,
+            input [3-1:0] ALUControl);
 
-    assign zero_flag = (a - b) ? 1 : 0;
+    wire [N-1:0] sum;
+    wire [N-1:0] sub;
+    wire [N-1:0] y_and;
+    wire [N-1:0] y_or;
+    assign zero_flag = ((SrcA - SrcB) !== 0) ? 0 : 1;
 
-    adder add1(.f(sum), .cout(cout), .a(a), .b(b)); // 000
-    subtractor sub1(sub, a, b); // 001
-    andN and1(y_and, a, b); // 010
-    orN or1(y_or, a, b); // 011
-    mux32 mux32_1(f, sum, sub, y_and, y_or, sel);
+    adder add1(.f(sum), .cout(cout), .a(SrcA), .b(SrcB)); // 000
+    subtractor sub1(sub, SrcA, SrcB); // 001
+    andN and1(y_and, SrcA, SrcB); // 010
+    orN or1(y_or, SrcA, SrcB); // 011
+    mux32 mux32_1(ALUResult, sum, sub, y_and, y_or, ALUControl);
 endmodule
 
 module half_adder(s, c, a, b);
