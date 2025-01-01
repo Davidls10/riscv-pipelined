@@ -196,17 +196,19 @@ module processor(output pc_out, alu_result,
                 PCF <= PCFNext;
         end
 
-        $display("PCD = %x  InstrD = %b  A1 = %d  A2 = %d  JumpD = %d  BranchD = %d  RegWriteD = %b", 
-                 PCD, InstrD, InstrD[19:15], InstrD[24:20], JumpD, BranchD, RegWriteD);
+        $display("PCD = %x  InstrD = %b  A1 = %d  A2 = %d  RdD = %d  JumpD = %d  BranchD = %d  RegWriteD = %b", 
+                 PCD, InstrD, InstrD[19:15], InstrD[24:20], RdD, JumpD, BranchD, RegWriteD);
         $display("RD1D = %d  RD2D = %d  ImmExtD = %x  PCPlus4D = %x", RD1D, RD2D, ImmExtD, PCPlus4D);
         $display("RD1E = %d  RD2E = %d", RD1E, RD2E);
         $display("BranchE = %d  ZeroE = %d  AluSrcD = %d  JumpE = %d", BranchE, ZeroE, AluSrcD, JumpE);
-        $display("PCE = %x  ImmExtE = %x  ALUResultE = %x  RegWriteE = %b  PCPlus4E = %x", PCE, ImmExtE, ALUResultE, RegWriteE, PCPlus4E);
-        $display("ALUResultM = %d  WriteDataM = %b  RdM = %d  PCPlus4M = %d  RegWriteM = %d", ALUResultM, WriteDataM, RdM, PCPlus4M, RegWriteM);
+        $display("PCE = %x  ImmExtE = %x  ALUResultE = %x  RegWriteE = %b  PCPlus4E = %x  WriteDataE = %d", 
+                 PCE, ImmExtE, ALUResultE, RegWriteE, PCPlus4E, WriteDataE);
+        $display("ALUResultM = %d  WriteDataM = %d  RdM = %d  PCPlus4M = %d  RegWriteM = %d", ALUResultM, WriteDataM, RdM, PCPlus4M, RegWriteM);
         $display("RegWriteW = %b  ResultSrcW = %d  ALUResultW = %d  ReadDataW = %d  PCPlus4W = %d  ResultW = %d  RdW = %d", 
                  RegWriteW, ResultSrcW, ALUResultW, ReadDataW, PCPlus4W, ResultW, RdW);
-        $display("ForwardAE = %b  ForwardBE = %b  SrcAE = %d  SrcBE = %d", ForwardAE, ForwardBE, SrcAE, SrcBE);
-        $display("PCSrcE = %b  lwStall = %b  StallF = %b  StallD = %b  FlushD = %b  FlushE = %b\n\n", PCSrcE, lwStall, StallF, StallD, FlushD, FlushE);
+        $display("ForwardAE = %b  ForwardBE = %b  SrcAE = %d  SrcBE = %d  AluSrcE = %d  WriteDataE = %d", 
+                 ForwardAE, ForwardBE, SrcAE, SrcBE, AluSrcE, WriteDataE);
+        $display("PCSrcE = %b  lwStall = %b  StallF = %b  StallD = %b  FlushD = %b  FlushE = %b\n", PCSrcE, lwStall, StallF, StallD, FlushD, FlushE);
     end
 
     // program counter + 4
@@ -267,16 +269,14 @@ module processor(output pc_out, alu_result,
     /**
     * The ALU is the part of the computer that do arithmetic and logic operations.
     */
-    assign SrcAE = (ForwardAE[1] === 1) ? ALUResultM : (ForwardAE[0] === 1 ? ResultSrcW : RD1E);
+    assign SrcAE = (ForwardAE[1] === 1) ? ALUResultM : (ForwardAE[0] === 1 ? ResultW : RD1E);
     assign SrcBE = (AluSrcE === 0) ? 
-                   ((ForwardBE[1] === 1) ? ALUResultM : (ForwardBE[0] === 1 ? ResultSrcW : RD2E)) :
+                   ((ForwardBE[1] === 1) ? ALUResultM : (ForwardBE[0] === 1 ? ResultW : RD2E)) :
                    ImmExtE;
+    assign WriteDataE = (ForwardBE[1] === 1) ? ALUResultM : (ForwardBE[0] === 1 ? ResultW : RD2E);
 
     alu alu1 (.ALUResult(ALUResultE), .zero_flag(ZeroE), .SrcA(SrcAE),
               .SrcB(SrcBE), .ALUControl(ALUControlE));
-
-
-    assign WriteDataE = RD2E;
 
 
     // If there is a condition to branch, the next PC value must be to the

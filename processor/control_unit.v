@@ -70,7 +70,7 @@ module main_decoder (input [7-1:0] opcode,
                     imm_src = 2'b01;
                     alu_src = 1'b1;
                     mem_write = 1'b1;
-                    result_src = 2'bXX;
+                    result_src = 2'bxx;
                     branch = 1'b0;
                     alu_op = 2'b00;
                     jump = 1'b0;
@@ -78,7 +78,7 @@ module main_decoder (input [7-1:0] opcode,
             7'b0110011: // R-type or
                 begin
                     reg_write = 1'b1;
-                    imm_src = 2'bXX;
+                    imm_src = 2'bxx;
                     alu_src = 1'b0;
                     mem_write = 1'b0;
                     result_src = 2'b00;
@@ -89,7 +89,7 @@ module main_decoder (input [7-1:0] opcode,
             7'b0110011: // R-type and
                 begin
                     reg_write = 1'b1;
-                    imm_src = 2'bXX;
+                    imm_src = 2'bxx;
                     alu_src = 1'b0;
                     mem_write = 1'b0;
                     result_src = 2'b00;
@@ -103,7 +103,7 @@ module main_decoder (input [7-1:0] opcode,
                     imm_src = 2'b10;
                     alu_src = 1'b0;
                     mem_write = 1'b0;
-                    result_src = 2'bXX;
+                    result_src = 2'bxx;
                     branch = 1'b1;
                     alu_op = 2'b01;
                     jump = 1'b0;
@@ -127,7 +127,7 @@ module main_decoder (input [7-1:0] opcode,
                     mem_write = 1'b0;
                     result_src = 2'b10;
                     branch = 1'b0;
-                    alu_op = 2'bXX;
+                    alu_op = 2'bxx;
                     jump = 1'b1;
                 end
 
@@ -140,7 +140,7 @@ module main_decoder (input [7-1:0] opcode,
                     result_src = 2'bxx;
                     branch = 1'bx;
                     alu_op = 2'bxx;
-                    jump = 1'bx;                        
+                    jump = 1'bx;
                     // reg_write = 1'b0;
                     // imm_src = 2'b00;
                     // alu_src = 1'b0;
